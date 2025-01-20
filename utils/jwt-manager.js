@@ -6,21 +6,23 @@ const generateTokenOnLogin = (username) => {
     return jwt.sign({ username }, SECRET_KEY, { expiresIn: 300 });
 };
 
-const validateToken = (username) => {
+const validateToken = (token) => {
     let TOKEN_IS_VALID = false;
 
     try {
-        if(!token){
-            throw new Error('Token not provided');
+        if(!token) {
+            throw new Error('Empty token.');
         }
 
         jwt.verify(token, SECRET_KEY);
 
         TOKEN_IS_VALID = true;
-        
     } catch (error) {
         TOKEN_IS_VALID = false;
     }
-}
 
-module.exports = { generateTokenOnLogin };
+    return TOKEN_IS_VALID;
+};
+
+module.exports = { generateTokenOnLogin, validateToken };
+
