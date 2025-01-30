@@ -15,46 +15,50 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-
-    const USER_FOUND = 
-        USERS_LIST_BD.find(user => user.username === username && user.password === password);
-
-    if(!USER_FOUND) {
-        return res.status(401).json({ message: 'Invalid credentials.' });
-    }
-
-    const userToken = generateTokenOnLogin(username);
-
-    return res.json({ token: userToken });
+    setTimeout(() => {
+        const { username, password } = req.body;
+    
+        const USER_FOUND = 
+            USERS_LIST_BD.find(user => user.username === username && user.password === password);
+    
+        if(!USER_FOUND) {
+            return res.status(401).json({ message: 'Invalid credentials.' });
+        }
+    
+        const userToken = generateTokenOnLogin(username);
+    
+        return res.json({ token: userToken });
+    }, 3000)
 });
 
 app.post('/create-user', authenticateToken, (req, res) => {
-    const tokenUsername = req.username;
-    const newUser = req.body;
-
-    const { name, email, username, password } = newUser;
-
-    if(!name || !email || !username || !password) {
-        return res.status(400).json({ message: 'All fields (name, email, username, password) are required.' });
-    }
+    setTimeout(() => {
+        const tokenUsername = req.username;
+        const newUser = req.body;
     
-    const USER_TOKEN_FOUND = USERS_LIST_BD.findIndex((user) => user.username === tokenUsername);
-
-    if(USER_TOKEN_FOUND === -1) {
-        return res.status(403).json({ message: 'User not found.' });
-    }
-
-    const USER_FOUND = USERS_LIST_BD.findIndex((user) => user.username === newUser.username);
-    const USER_ALREADY_REGISTERED = USER_FOUND !== -1;
-
-    if(USER_ALREADY_REGISTERED) {
-        return res.status(409).json({ message: 'User already registered.' });
-    }
-
-    USERS_LIST_BD.push(newUser);
-
-    return res.status(201).json({ message: 'User successfully created.' });
+        const { name, email, username, password } = newUser;
+    
+        if(!name || !email || !username || !password) {
+            return res.status(400).json({ message: 'All fields (name, email, username, password) are required.' });
+        }
+        
+        const USER_TOKEN_FOUND = USERS_LIST_BD.findIndex((user) => user.username === tokenUsername);
+    
+        if(USER_TOKEN_FOUND === -1) {
+            return res.status(403).json({ message: 'User not found.' });
+        }
+    
+        const USER_FOUND = USERS_LIST_BD.findIndex((user) => user.username === newUser.username);
+        const USER_ALREADY_REGISTERED = USER_FOUND !== -1;
+    
+        if(USER_ALREADY_REGISTERED) {
+            return res.status(409).json({ message: 'User already registered.' });
+        }
+    
+        USERS_LIST_BD.push(newUser);
+    
+        return res.status(201).json({ message: 'User successfully created.' });
+    }, 3000)
 });
 
 app.put('/update-user', authenticateToken, (req, res) => {
